@@ -1,0 +1,29 @@
+import re
+import csv
+EmpInput = ""
+table_name = ""
+id = ""
+print("Шаблон ввода данных : CREATE ИМЯ_ТАБЛИЦЫ (id(число))")
+while ";" not in EmpInput:
+    EmpInput += input()
+EmpInput = EmpInput.replace(";","")
+temp = ""
+result = re.match(r'create\s[a-z]{1,10}\s\([1-9][0-9]{0,3},[1-9][0-9]{0,3}\)', EmpInput)
+temp = result.group(0)
+temp = temp.replace("create","")
+temp = temp.replace("(","")
+temp = temp.replace(")","")
+temp = temp.replace(" ","",1)
+temp = temp.replace(","," ")
+result = re.split(r" ", temp)
+print(f"Table {result[0]} has been created")
+EmpInput=""
+print("Выполнить insert в существующую таблицу")
+while ";" not in EmpInput:
+    EmpInput+=input()
+RegExINSERT = re.match(fr'INSERT\s{result[0]}',EmpInput)
+print(RegExINSERT.group(0))
+ 
+with open("fio_salary_kpi.csv",'a',newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow([f'{result[1]}', f'{result[2]}'])
