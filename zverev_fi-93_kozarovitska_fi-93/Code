@@ -1,29 +1,134 @@
 import re
-import csv
+class Table:
+
+    def __init__(self, name, column1_name, column2_name):
+        self.name= name
+        self.column1_name= column1_name
+        self.column2_name= column2_name
+        self.column1=[]
+        self.column2=[]
+        self.number=[]
+     #   self.column3=[]
+        #self.number_of_columns= number_of_columns
+    def add_row(self,number,value1, value2):
+        self.number.append(number)
+        self.column1.append(value1)
+        self.column2.append(value2)
+       # self.column3.append(Row(value3))
+    def get_name(self):
+       return self.name
+    def delete(self,number):
+        self.column1.pop(number-1)
+        self.column2.pop(number-1)
+    def show(self):
+        size_column= len(self.column1)
+        print (f"№ {self.column1_name}  {self.column2_name}")
+        for word in range (size_column):
+            print(f"{word+1} {self.column1[word]}  {self.column2[word]}\n")
+       
+class Row:
+        def _init_ (self,value1, value2):
+            self.value1= value1
+            self.value2= value2
+            #self.value3= value3
+table_names=[]
 EmpInput = ""
 table_name = ""
 id = ""
+tables =[]
 print("Шаблон ввода данных : CREATE ИМЯ_ТАБЛИЦЫ (id(число))")
+KeyWords = ['create','select','insert']
 while ";" not in EmpInput:
     EmpInput += input()
-EmpInput = EmpInput.replace(";","")
-temp = ""
-result = re.match(r'create\s[a-z]{1,10}\s\([1-9][0-9]{0,3},[1-9][0-9]{0,3}\)', EmpInput)
-temp = result.group(0)
-temp = temp.replace("create","")
-temp = temp.replace("(","")
-temp = temp.replace(")","")
-temp = temp.replace(" ","",1)
-temp = temp.replace(","," ")
-result = re.split(r" ", temp)
-print(f"Table {result[0]} has been created")
-EmpInput=""
-print("Выполнить insert в существующую таблицу")
-while ";" not in EmpInput:
-    EmpInput+=input()
-RegExINSERT = re.match(fr'INSERT\s{result[0]}',EmpInput)
-print(RegExINSERT.group(0))
- 
-with open("fio_salary_kpi.csv",'a',newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow([f'{result[1]}', f'{result[2]}'])
+col_numb=0
+while "exit" not in EmpInput:
+    
+        #EmpInput += input()
+    EmpInput = EmpInput.replace(";","")
+    temp = ""
+    if ("insert" in EmpInput):
+        result1 = re.match(r'insert\s+[a-zA-Z0-9]+\s+\(\s*[a-zA-Z0-9]+\s*,\s*[a-zA-Z0-9]+\s*\)\s*', EmpInput)
+        temp = result1.group(0)
+        temp = temp.replace("insert","",1) # ''
+        temp = temp.replace("(","")
+        temp = temp.replace(")","")
+        temp = temp.replace(" ","",1)
+        temp = temp.replace(","," ")
+        result1 = str.split(temp) # название таблицы 
+        for elem in KeyWords:
+            if result1[0]==elem:
+                raise Exception("cant't use key words")
+        for elem in tables:
+            if elem.get_name()==result1[0]:
+                name_of_insert= elem.get_name()
+                break
+        col_numb= col_numb+1
+        r1= elem.add_row(col_numb,result1[1], result1[2])
+        print(f"Row has been added to table {name_of_insert}")
+        EmpInput=""
+        while ";" not in EmpInput:
+            EmpInput += input()
+    if ("create" in EmpInput):
+        result = re.match(r'create\s+[a-zA-Z0-9]+\s+\(\s*[a-zA-Z0-9]+\s*,\s*[a-zA-Z0-9]+\s*\)\s*', EmpInput)
+        temp = result.group(0)
+        temp = temp.replace("create","",1) #\s+[a-z]{1,10}\s+\([a-z]{1,10},[a-z]{1,10}\)
+        temp = temp.replace("(","")
+        temp = temp.replace(")","")
+        temp = temp.replace(" ","",1)
+        temp = temp.replace(","," ")
+        result = str.split(temp) # название таблицы re.split(r" ", temp)
+        for words in table_names:
+            if result[0]==words:
+                raise ValueError("this name is already taken")
+        for elem in KeyWords:
+            if result[0]==elem:
+                raise Exception("cant't use key words")
+        t1= Table(result[0], result[1], result[2])
+        tables.append(t1)
+        #print(inst[0].get_name())
+        print(f"Table {result[0]} has been created")
+        table_names.append(result[0])
+        EmpInput=""
+        while ";" not in EmpInput:
+            EmpInput += input()
+    if ("show" in EmpInput):
+        result1 = re.match(r'show\s+[a-zA-Z0-9]+\s*', EmpInput)
+        temp = result1.group(0)
+        temp = temp.replace("show","",1) # ''
+        temp = temp.replace(" ","",1)
+        temp = temp.replace(","," ")
+        result1 = str.split(temp) # название таблицы 
+        for elem in KeyWords:
+            if result1[0]==elem:
+                raise Exception("cant't use key words")
+        for elem in tables:
+            if elem.get_name()==result1[0]:
+                name_of_insert= elem.get_name()
+                break
+        print(f"this is {elem.get_name()} table")
+        elem.show()
+        EmpInput=""
+        while ";" not in EmpInput:
+            EmpInput += input()
+    if ("delete" in EmpInput):
+            result1 = re.match(r'delete\s+[a-zA-Z0-9]+\s*\d+', EmpInput)
+            temp = result1.group(0)
+            temp = temp.replace("delete","",1) # ''
+            temp = temp.replace(" ","",1)
+            temp = temp.replace(","," ")
+            result1 = str.split(temp) # название таблицы 
+            for elem in tables:
+                if elem.get_name()==result1[0]:
+                    name_of_insert= elem.get_name()
+                    break
+            print(f"delete {result1[1]}")
+            elem.delete(int(result1[1]))
+            elem.show()
+            EmpInput=""
+            while ";" not in EmpInput:
+                EmpInput += input()
+for table in tables:
+    print(f"this is {table.get_name()} table")
+    table.show()
+
+
