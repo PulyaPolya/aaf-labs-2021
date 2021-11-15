@@ -894,6 +894,7 @@ print("Шаблон ввода данных : CREATE ИМЯ_ТАБЛИЦЫ (id(�
 KeyWords = ['create','select','insert']
 while ";" not in EmpInput:
     EmpInput += input()
+    EmpInput+='  '
 col_numb=0
 EmpInput1=EmpInput
 EmpInput1=EmpInput1.casefold()
@@ -910,7 +911,7 @@ while "exit" not in EmpInput1:
             #temp = result.group(0)
             temp = temp.replace("create","",1) #\s+[a-z]{1,10}\s+\([a-z]{1,10},[a-z]{1,10}\)
             temp = temp.replace("("," ")
-            temp = temp.replace(")","")
+            temp = temp.replace(")"," ")
             temp = temp.replace(" ","",1)
             temp = temp.replace(","," ")
             temp = temp.replace(";"," ")
@@ -957,7 +958,8 @@ while "exit" not in EmpInput1:
 
         EmpInput=""
         while ";" not in EmpInput:
-            EmpInput += input()  
+            EmpInput += input()
+            EmpInput+='  '
         temp = ""
     elif ("insert" in EmpInput1):
         s1='\s*(I|i)(N|n)(S|s)(E|e)(R|r)(T|t)\s+[a-zA-Z0-9]+\s*\(\s*("[^"]+"\s*,\s*)*("[^"]+"\s*)\)\s*'
@@ -1011,6 +1013,7 @@ while "exit" not in EmpInput1:
         EmpInput=""
         while ";" not in EmpInput:
             EmpInput += input()
+            EmpInput+='  '
     
     elif ("select" in EmpInput1):
         if ("*" in EmpInput1):
@@ -1298,6 +1301,7 @@ while "exit" not in EmpInput1:
             EmpInput=""
             while ";" not in EmpInput:
                 EmpInput += input()
+                EmpInput+='  '
         elif ("where" in EmpInput1):
             #try:
                 result1=[]
@@ -1671,6 +1675,7 @@ while "exit" not in EmpInput1:
                 number=0
                 while ";" not in EmpInput:
                  EmpInput += input()
+                 EmpInput+='  '
         else:
             #result1 = re.match(r'select\s+([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\s+from\s+[a-zA-Z0-9]+\s*', EmpInput)
             #temp = result1.group(0)
@@ -1725,6 +1730,7 @@ while "exit" not in EmpInput1:
             EmpInput=""
             while ";" not in EmpInput:
                 EmpInput += input()
+                EmpInput+='  '
     elif ("delete" in EmpInput1):
         if ("where" in EmpInput1):
             s1= '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*(\"[^\"]+\"\s*)'
@@ -1950,6 +1956,7 @@ while "exit" not in EmpInput1:
             number=0
             while ";" not in EmpInput:
                 EmpInput += input()
+                EmpInput+='  '
         else:
             s1='\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*'  
             if re.match(s1, EmpInput) is not None:
@@ -1986,11 +1993,13 @@ while "exit" not in EmpInput1:
             EmpInput=""
             while ";" not in EmpInput:
                 EmpInput += input()
+                EmpInput+='  '
     #EmpInput=""
     else:
         EmpInput=""
         while ";" not in EmpInput:
             EmpInput += input()
+            EmpInput+='  '
 for table in tables:
     print(f"this is {table.get_name()} table")
     table.show()
