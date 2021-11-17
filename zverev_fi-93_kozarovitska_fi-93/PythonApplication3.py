@@ -138,10 +138,12 @@ KeyWords = ['create','select','insert']
 EmpInput=get_input()
 EmpInput1=EmpInput
 EmpInput1=EmpInput1.casefold()
+first_command=EmpInput1.split()[0]
 while "exit" not in EmpInput1:
     EmpInput1=EmpInput
     EmpInput1=EmpInput1.casefold()
-    if "create" in EmpInput1 and '"' not in EmpInput1 :
+    first_command=EmpInput1.split()[0]
+    if first_command=="create" :
         name_table=""
         result=[]
         index=[]
@@ -172,9 +174,7 @@ while "exit" not in EmpInput1:
                     tables.append(name_table)
             except:
                     print("something vemt wrong")
-        EmpInput=get_input()
-       
-    elif ("insert" in EmpInput1):
+    elif (first_command=="insert"):
             column_values=[]
             name_table=module2.insert_table(EmpInput, column_values)
             check_if_name_is_right=-1
@@ -199,8 +199,7 @@ while "exit" not in EmpInput1:
                             print("wrong size")
             except Exception:
                 print("wrong name")
-            EmpInput=get_input()
-    elif ("select" in EmpInput1):
+    elif first_command=="select" or first_command=="select*":
         if ("*" in EmpInput1):
             if ("where" in EmpInput1):
                 result1=[]
@@ -472,8 +471,7 @@ while "exit" not in EmpInput1:
                         print("smth went wrong")
             except Exception:
                 print('wrong name')
-        EmpInput=get_input()
-    elif ("delete" in EmpInput1):
+    elif (first_command=="delete"):
         if ("where" in EmpInput1):
             result1=[]
             name_of_insert=module2.delete_where(EmpInput, result1)
@@ -571,9 +569,10 @@ while "exit" not in EmpInput1:
                         print("smth went wrong")
             except Exception: 
                 print('wrong name')
-        EmpInput=get_input()  
     else:
         print('please insert supported function')
-        EmpInput=get_input()
+    EmpInput=get_input() 
+    EmpInput1=EmpInput1.casefold()
+    first_command=EmpInput1.split()[0]
 
 
