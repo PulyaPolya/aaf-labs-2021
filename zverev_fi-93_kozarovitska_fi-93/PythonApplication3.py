@@ -140,9 +140,7 @@ EmpInput1=EmpInput
 EmpInput1=EmpInput1.casefold()
 first_command=EmpInput1.split()[0]
 while "exit" not in EmpInput1:
-    EmpInput1=EmpInput
-    EmpInput1=EmpInput1.casefold()
-    first_command=EmpInput1.split()[0]
+    
     if first_command=="create" :
         name_table=""
         result=[]
@@ -572,7 +570,7 @@ while "exit" not in EmpInput1:
     else:
         print('please insert supported function')
     EmpInput=get_input() 
-    EmpInput1=EmpInput1.casefold()
+    EmpInput1=EmpInput.casefold()
     first_command=EmpInput1.split()[0]
 
 
