@@ -7,19 +7,21 @@ def assign(arr1, arr2):
 
 
 def create_table(EmpInput, result1, index1, number_of_index1):
-    s1 = '\s*(C|c)(r|R)(e|E)(A|a)(t|T)(e|E)\s+[a-zA-Z][a-zA-Z0-9]*\s*\(\s*([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\)\s*'
+    s1 = '\s*(C|c)(r|R)(e|E)(A|a)(t|T)(e|E)\s+[a-zA-Z][a-zA-Z0-9]*\s*\(\s*([a-zA-Z0-9]+\s*((I|i)(N|n)(D|d)(E|e)(X|x)(e|E)(D|d)\s*)*\s*)\s*(\s*,\s*[a-zA-Z0-9]+\s*(\s+(I|i)(N|n)(D|d)(E|e)(X|x)(e|E)(D|d))*)*\s*\)\s*;'
     if re.match(s1, EmpInput) is not None:
         EmpInput1 = EmpInput.casefold()
         first_command = EmpInput1.split()[0]
         temp = re.sub(r'(C|c)(r|R)(e|E)(A|a)(t|T)(e|E)', ' create ', EmpInput)
         temp = re.sub(r'(I|i)(N|n)(D|d)(E|e)(X|x)(e|E)(D|d)', 'indexed', temp)
-        # temp = result.group(0)
         temp = temp.replace(first_command, "", 1)
         temp = temp.replace("(", " ")
         temp = temp.replace(")", " ")
         temp = temp.replace(" ", "", 1)
         temp = temp.replace(",", " ")
         temp = temp.replace(";", " ")
+        #while temp[-1]!=';':
+            #temp = temp[:-1]
+        #temp = temp[:-1]
         result = str.split(temp)  # название таблицы re.split(r" ", temp)
 
         name_table = result[0]
@@ -34,25 +36,21 @@ def create_table(EmpInput, result1, index1, number_of_index1):
                 result.pop(i)
                 size = len(result)
             i = i + 1
-        size = len(result)
-        size = len(index)
         result.pop(0)
         assign(result, result1)
         assign(index, index1)
         assign(number_of_index, number_of_index1)
-        name_table1 = name_table
         return name_table
 
 
 def insert_table(EmpInput, column_values1):
-    s1 = '\s*(I|i)(N|n)(S|s)(E|e)(R|r)(T|t)\s+[a-zA-Z0-9]+\s*\(\s*("[^"]+"\s*,\s*)*("[^"]+"\s*)\)\s*'
+    s1 = '\s*(I|i)(N|n)(S|s)(E|e)(R|r)(T|t)\s+[a-zA-Z0-9]+\s*\(\s*("[^"]+"\s*,\s*)*("[^"]+"\s*)\)\s*;\s*'
     if re.match(s1, EmpInput) is not None:
         EmpInput1 = EmpInput.casefold()
         first_command = EmpInput1.split()[0]
         temp1 = re.findall(r'\"[^\"]+\"', EmpInput)
         column_values = []
         temp = re.sub(r'(I|i)(N|n)(S|s)(E|e)(R|r)(T|t)', '  insert  ', EmpInput)
-        # temp2=result2.group(0)
         for elem in temp1:
             elem = elem.replace('"', '')
             column_values.append(elem)
@@ -60,6 +58,7 @@ def insert_table(EmpInput, column_values1):
         temp = temp.replace(first_command, "", 1)  # ''
         temp = temp.replace("(", " ")
         temp = temp.replace(")", "")
+        temp = temp.replace(";", "")
         temp = temp.replace(" ", "", 1)
         temp = temp.replace(",", " ")
         result1 = str.split(temp)  # название таблицы
@@ -68,80 +67,105 @@ def insert_table(EmpInput, column_values1):
         return name_of_table
 
 
+def replace_value(EmpInput):
+    temp = EmpInput
+    if ("<=" in EmpInput):
+        temp = temp.replace("<=", " <= ", 1)
+    elif ("=<" in EmpInput):
+        temp = temp.replace("=<", " <= ", 1)
+    elif (">=" in EmpInput):
+        temp = temp.replace(">=", " >=  ", 1)
+    elif ("=>" in EmpInput):
+        temp = temp.replace("=>", " >=  ", 1)
+    elif (">" in EmpInput):
+        temp = temp.replace(">", " > ", 1)
+    elif ("<" in EmpInput):
+        temp = temp.replace("<", " <  ", 1)
+    elif ("=" in EmpInput):
+        temp = temp.replace("=", " =  ", 1)
+    return temp
+def replace_value_reversed(EmpInput):
+    temp = EmpInput
+    if ("<=" in EmpInput):
+        temp = temp.replace("<=", " >= ", 1)
+    elif ("=<" in EmpInput):
+        temp = temp.replace("=<", " >= ", 1)
+    elif (">=" in EmpInput):
+        temp = temp.replace(">=", " <=  ", 1)
+    elif ("=>" in EmpInput):
+        temp = temp.replace("=>", " <=  ", 1)
+    elif (">" in EmpInput):
+        temp = temp.replace(">", " < ", 1)
+    elif ("<" in EmpInput):
+        temp = temp.replace("<", " >  ", 1)
+    elif ("=" in EmpInput):
+        temp = temp.replace("=", " =  ", 1)
+    return temp
 def select_columns_where(EmpInput, result):
-    result1 = []
-    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*("[^"]+"\s*)'
-    s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+\s*'
-    s3 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+\s*'
-    if (re.match(s1, EmpInput) is not None) or (re.match(s2, EmpInput) is not None) or (
-            re.match(s3, EmpInput) is not None):
+
+    #s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*("[^"]+"\s*)\s*;'
+    s1='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+\s*)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
+    #s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    #s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    case=0
+    if '"' in EmpInput:
+        if re.match(s1, EmpInput) is not None:
+            case=1
+        if re.match(s2, EmpInput) is not None:
+            case=2
+    elif re.match(s3, EmpInput) is not None:
+        case = 3
+    if case!=0:
         EmpInput1 = EmpInput.casefold()
-        EmpInput = EmpInput.replace(";", "", 1)
         first_command = EmpInput1.split()[0]
-        temp = EmpInput
+        if case==1 or case==3:
+            temp = replace_value(EmpInput)
+        elif case==2:
+            temp=replace_value_reversed(EmpInput)
         temp = re.sub(r'(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)', '  select  ', temp)
         temp = re.sub(r'(f|F)(r|R)(o|O)(M|m)', '  from  ', temp)
         temp = re.sub(r'(w|W)(h|H)(e|E)(r|R)(e|E)', '  where  ', temp)
         temp = temp.replace(first_command, "", 1)
         temp = temp.replace(";", "", 1)
         temp = temp.replace("from", "", 1)
-        temp = temp.replace(" ", "", 1)
         temp = temp.replace(",", " ")
-        if ("<=" in EmpInput):
-            temp = temp.replace("<=", " <= ")
-        elif (">=" in EmpInput):
-            temp = temp.replace(">=", " >=  ")
-        elif (">" in EmpInput):
-            temp = temp.replace(">", " > ")
-        elif ("<" in EmpInput):
-            temp = temp.replace("<", " <  ")
-        elif ("=" in EmpInput):
-            temp = temp.replace("=", " =  ")
-        result1 = str.split(temp)  # название таблицы
-
-        size = len(result1)
+        result1 = str.split(temp)
         for i in range(len(result1)):
             if result1[i] == "where":
                 name_of_insert = result1[i - 1]
                 result1.pop(i - 1)
-                # temp = temp.replace(name_of_insert," ")
                 break
         temp = temp.replace("where", "", 1)
-        # temp = temp.replace('"'," ")
-        number = 0
-
         temp = temp.replace('"', " ")
         result1 = str.split(temp)
         result1.pop(len(result1) - 4)
         size_res = len(result1)
-        if re.match(s1, EmpInput) is not None:
+        if case==1:
             result1.pop(len(result1) - 1)
             value = re.findall(r'\"[^\"]+\"', EmpInput)
             value = value[0].replace('"', "")
             result1.append(value)
             assign(result1, result)
-        elif re.match(s2, EmpInput) is not None:
-            if result1[size_res - 2] == '<=':
-                result1[size_res - 2] = '>='
-            elif result1[size_res - 2] == '>=':
-                result1[size_res - 2] = '<='
-            elif result1[size_res - 2] == '>':
-                result1[size_res - 2] = '<'
-            elif result1[size_res - 2] == '<':
-                result1[size_res - 2] = '>'
+            return (name_of_insert, "select col where ''")
+        elif case==2:
             result1[size_res - 3], result1[size_res - 1] = result1[size_res - 1], result1[size_res - 3]
             result1.pop(len(result1) - 1)
             value = re.findall(r'\"[^\"]+\"', EmpInput)
             value = value[0].replace('"', "")
             result1.append(value)
             assign(result1, result)
-        elif re.match(s3, EmpInput) is not None:
+            return (name_of_insert, "select col where ''")
+        elif case==3:
             assign(result1, result)
-        return name_of_insert
+            return (name_of_insert, "select col where two col")
+
 
 
 def select_columns(EmpInput, result):
-    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*'
+
+    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*)*(\s*,\s*[a-zA-Z0-9]+\s*)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*;'
     if re.match(s1, EmpInput) is not None:
         temp = EmpInput
         EmpInput = EmpInput.replace(";", "", 1)
@@ -153,8 +177,6 @@ def select_columns(EmpInput, result):
         temp = temp.replace("from", "", 1)
         temp = temp.replace(" ", "", 1)
         temp = temp.replace(",", " ")
-        # temp=temp[:-1]
-        # temp = temp.replace(";","",1)
         result1 = str.split(temp)  # название таблицы
         size = len(result1)
         assign(result1, result)
@@ -162,17 +184,35 @@ def select_columns(EmpInput, result):
         name_of_insert = name_of_insert.replace(";", "", 1)
         return name_of_insert
 
-def command_where(EmpInput,result):
-    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+([a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*(\"[^\"]+\"\s*))'
-    s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+\s*'
-    s3 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+\s*'
-    s4 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*(\"[^\"]+\"\s*)'
-    s5 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)\s*((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+'
-    s6 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=))\s*[a-zA-Z0-9]+'
-    if (re.match(s1, EmpInput) is not None) or (re.match(s2, EmpInput) is not None) or (
-            re.match(s3, EmpInput) is not None) or (re.match(s4, EmpInput) is not None)or (re.match(s5, EmpInput) is not None)or (re.match(s6, EmpInput) is not None):
+def command_all_where(EmpInput, result):
+    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+([a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*))\s*;'
+    s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*\s*;'
+    s3 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s4 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
+    s5 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s6 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    case=0
+    if re.match(s1, EmpInput) is not None:
+        case=1
+    if re.match(s2, EmpInput) is not None:
+        case=2
+    if re.match(s3, EmpInput) is not None:
+        case=3
+    if re.match(s4, EmpInput) is not None:
+        case=4
+    if re.match(s5, EmpInput) is not None:
+        case=5
+    if re.match(s6, EmpInput) is not None:
+        case = 6
+    if case!=0:
         temp = EmpInput
-        EmpInput = EmpInput.replace(";", "", 1)
+        if case==1 or case==4:
+            temp = replace_value(EmpInput)
+        elif case==2 or case==5:
+            temp = replace_value_reversed(EmpInput)
+        elif case==3 or case==6:
+            temp = replace_value(EmpInput)
+        #EmpInput = EmpInput.replace(";", "", 1)
         EmpInput1 = EmpInput.casefold()
         first_command = EmpInput1.split()[0]
         temp = re.sub(r'(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)', '  select  ', temp)
@@ -185,18 +225,7 @@ def command_where(EmpInput,result):
         temp = temp.replace("from", "", 1)
         temp = temp.replace(" ", "", 1)
         temp = temp.replace(",", " ")
-        if ("<=" in EmpInput):
-            temp = temp.replace("<=", " <= ")
-        elif (">=" in EmpInput):
-            temp = temp.replace(">=", " >=  ")
-        elif (">" in EmpInput):
-            temp = temp.replace(">", " > ")
-        elif ("<" in EmpInput):
-            temp = temp.replace("<", " <  ")
-        elif ("=" in EmpInput):
-            temp = temp.replace("=", " =  ")
         result1 = str.split(temp)  # название таблицы
-        size = len(result1)
         for i in range(len(result1)):
             if result1[i] == "where":
                 name_of_table = result1[i - 1]
@@ -204,45 +233,47 @@ def command_where(EmpInput,result):
                 break
         temp = temp.replace("where", "", 1)
         temp = temp.replace('"', " ")
-        size_res = len(result1)
         result1 = str.split(temp)
         result1.pop(len(result1) - 4)
         size_res = len(result1)
-        if re.match(s1, EmpInput) is not None or re.match(s4, EmpInput) is not None:
+        if case==1 or case==4:
             value = re.findall(r'\"[^\"]+\"', EmpInput)
             value = value[0].replace('"', "")
             result.append(result1[size_res - 3])
             result.append(result1[size_res - 2])
             result.append(value)
-        elif re.match(s2, EmpInput) is not None or re.match(s5, EmpInput) is not None:
-            if result1[size_res - 2] == '<=':
-                result1[size_res - 2] = '>='
-            elif result1[size_res - 2] == '>=':
-                result1[size_res - 2] = '<='
-            elif result1[size_res - 2] == '>':
-                result1[size_res - 2] = '<'
-            elif result1[size_res - 2] == '<':
-                result1[size_res - 2] = '>'
+        elif case==2 or case==5:
             value = re.findall(r'\"[^\"]+\"', EmpInput)
             value = value[0].replace('"', "")
             result.append(result1[size_res - 1])
             result.append(result1[size_res - 2])
             result.append(value)
-        elif re.match(s3, EmpInput) is not None or re.match(s6, EmpInput) is not None:
+        elif case==3 or case==6:
             result.append(result1[size_res - 3])
             result.append(result1[size_res - 2])
             result.append(result1[size_res - 1])
+        if case==1 or case==2: #re.match(s1, EmpInput) is not None or  re.match(s2, EmpInput) is not None
+            return(name_of_table, "select where ''")
+        if case==3: #re.match(s3, EmpInput) is not None
+            return (name_of_table, "select where two col")
+        if case==4 or case==5: #re.match(s4, EmpInput) is not None or re.match(s5, EmpInput) is not None
+            return (name_of_table, "delete where ''")
+        if case==6: # re.match(s6, EmpInput) is not None
+            return (name_of_table, "delete where two col")
+        #return name_of_table
 
-        return name_of_table
 def command_all(EmpInput):
-    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*'
-    s2 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*'
-    if re.match(s1, EmpInput) is not None or re.match(s2, EmpInput) is not None:
+    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*;'
+    s2 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*;'
+    case=0
+    if re.match(s1, EmpInput) is not None:
+        case = 1
+    if re.match(s2, EmpInput) is not None:
+        case = 2
+    if case!=0:
         temp = EmpInput
         EmpInput1 = EmpInput.casefold()
         first_command = EmpInput1.split()[0]
-        #temp = re.sub(r'(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)', '  select  ', temp)
-        #temp = re.sub(r'(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)', '  delete  ', temp)
         temp = re.sub(r'(f|F)(r|R)(o|O)(M|m)', '  from  ', temp)
         temp = temp.replace(first_command, "", 1)
         temp = temp.replace("from", "", 1)
@@ -250,9 +281,87 @@ def command_all(EmpInput):
         temp = temp.replace(",", " ")
         temp = temp.replace(";", " ")
         result1 = str.split(temp)
-        if re.match(s1, EmpInput) is not None:
+        if case==1: #re.match(s1, EmpInput) is not None
             name_table = result1[1]
+            return (name_table, "select")
         else:
             name_table = result1[0]
-        return name_table
+            return (name_table, "delete")
 
+def exit(EmpInput):
+    s1= '\s*(e|E)(x|X)(i|I)(t|T)\s*;'
+    if re.match(s1, EmpInput) is not None:
+        return 1
+
+
+def full_join(EmpInput):
+    s1='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*=\s*[a-zA-Z0-9]+;'
+    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*("[^"]+"\s*)\s*;'
+    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s4='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    case=0
+    if re.match(s1, EmpInput) is not None:
+            case=1
+    elif re.match(s2, EmpInput) is not None:
+        case=2
+    elif re.match(s3, EmpInput) is not None:
+        case =3
+    elif re.match(s4, EmpInput) is not None:
+        case = 4
+    if case!=0:
+        temp = EmpInput
+        EmpInput1 = EmpInput.casefold()
+        first_command = EmpInput1.split()[0]
+        if case==2 or case==4:
+            temp = replace_value(EmpInput)
+        elif case==3:
+            temp=replace_value_reversed(EmpInput)
+        temp = re.sub(r'(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)', '  select  ', temp)
+        temp = re.sub(r'(f|F)(r|R)(o|O)(M|m)', '  from  ', temp)
+        temp = re.sub(r'(F|f)(u|U)(L|l)(L|l)', '  full  ', temp)
+        temp = re.sub(r'(J|j)(O|o)(I|i)(N|n)', '  join  ', temp)
+        temp = re.sub(r'(O|o)(N|n)', '  on  ', temp)
+        temp = re.sub(r'=', '  =  ', temp)
+        temp = re.sub(r';', '  ', temp)
+        temp = temp.replace(first_command, "", 1)
+        temp = temp.replace(" ", "", 1)
+        temp = temp.replace(",", " ")
+        result1 = str.split(temp)
+        col_names=[]
+        for a in range (len(result1)):
+            if result1[a]=='from':
+                break
+        for t in range(a):
+            col_names.append(result1[t])
+        table1=result1[a+1]
+        for b in range (len(result1)):
+            if result1[b]=='join':
+                break
+        table2=result1[b+1]
+        size=len(result1)
+        symbol='='
+
+        if case==2 or case==3:
+            value = re.findall(r'\"[^\"]+\"', EmpInput)
+            value = value[0].replace('"', "")
+            col2 = result1[size - 5]
+            col1 = result1[size - 7]
+            symbol=result1[size - 2]
+            if case==2:
+                col_to_compare = result1[size - 3]
+            else:
+                col_to_compare = result1[size - 1]
+            return (col_names, table1, table2, col1, col2, 'full join where "" ', col_to_compare, value, symbol)
+        elif case==4:
+            col2 = result1[size - 5]
+            col1 = result1[size - 7]
+            col_to_compare2 = result1[size - 1]
+            col_to_compare1 = result1[size - 3]
+            symbol = result1[size - 2]
+            return (col_names, table1, table2, col1, col2, "full join where two col", col_to_compare1, col_to_compare2, symbol)
+        else:
+            col1 = result1[size - 3]
+            col2 = result1[size - 1]
+            return(col_names, table1, table2,col1, col2, "full join" )
+    else:
+        return None
