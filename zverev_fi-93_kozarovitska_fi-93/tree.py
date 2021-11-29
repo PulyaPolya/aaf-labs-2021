@@ -14,7 +14,7 @@ def inorder(root):
               end=" ")
         inorder(root.right)
 
-
+"""
 def find_ns(root, lkpval, res):
     if lkpval < root.key:
         if root.left is None:
@@ -44,7 +44,7 @@ def find_ns(root, lkpval, res):
             find_ns(root.right, lkpval, res)
         return root.count
 
-
+"""
 def insert(node, key, number):
     if node == None:
         k = newNode(key, number)
@@ -149,7 +149,6 @@ def find_l(root, lkpval, res):
         if root.key < lkpval:
             for i in root.count:
                 res.append(i)
-            #res_key.append(root.key)
             find_l(root.right, lkpval, res)
         find_l(root.left, lkpval, res)
     res.sort()
@@ -160,7 +159,6 @@ def find_g_eq(root, lkpval, res):
         if root.key >= lkpval:
             for i in root.count:
                 res.append(i)
-            #res_key.append(root.key)
             find_g_eq(root.left, lkpval, res)
         find_g_eq(root.right, lkpval, res)
     res.sort()
@@ -171,7 +169,6 @@ def find_l_eq(root, lkpval, res):
         if root.key <= lkpval:
             for i in root.count:
                 res.append(i)
-            #res_key.append(root.key)
             find_l_eq(root.right, lkpval, res)
         find_l_eq(root.left, lkpval, res)
     res.sort()
