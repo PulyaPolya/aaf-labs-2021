@@ -149,28 +149,27 @@ def get_input():
         EmpInput += '  '
     return EmpInput
 
-def check_if_name_is_correct(name_of_insert, tables, command):
-   check_if_name_is_right = -1
+def get_table_by_name(name_of_insert, tables, command):
+   #check_if_name_is_right = -1
+
    if command!="create":
-        for elem in tables:
-            if elem.get_name() == name_of_insert:
-                check_if_name_is_right = 1
-                return elem
-        if check_if_name_is_right == -1:
+        elem = tables.get(name_of_insert)
+        if elem is not None:
+            return elem
+        else:
             print(exc_name)
    else:
+
        if tables:
-           for elem in tables:
-               if elem.get_name() == name_table_create:  # !!!!!!
-                   check_if_name_is_right = 0
-           if check_if_name_is_right == 0:
-               print("this name is already taken, please try again")
+           elem = tables.get(name_of_insert)
+           if elem is not None:
+               print(exc_name)
            else:
                return 1
        else:
            return 1
 
-tables = []
+tables={}
 print("Please create table to start ")
 EmpInput1=''
 EmpInput=""
@@ -191,8 +190,8 @@ while parsing.exit(EmpInput) is None:
         col1=result_full_join[3]
         col2=result_full_join[4]
         command= result_full_join[5]
-        elem1=check_if_name_is_correct(table1, tables,'select full join')
-        elem2 = check_if_name_is_correct(table2, tables, 'select full join')
+        elem1=get_table_by_name(table1, tables, 'select full join')
+        elem2 = get_table_by_name(table2, tables, 'select full join')
         if elem1 and elem2 is not None:
             col_from_table1=[]
             col_from_table2 = []
@@ -321,12 +320,13 @@ while parsing.exit(EmpInput) is None:
         name_table_create = parsing.create_table(EmpInput, result, index, number_of_index)
         if name_table_create:
             name_table1 = name_table_create
-            result_correct_name=check_if_name_is_correct(name_table_create, tables, "create")
+            result_correct_name=get_table_by_name(name_table_create, tables, "create")
             if result_correct_name:
                     try:
                         name_table_create = table.Table(name_table_create, result, index, number_of_index)
                         print(f"Table {name_table1} has been created")
-                        tables.append(name_table_create)
+                        tables[name_table1]=name_table_create
+                        #tables.append(name_table_create)
                     except:
                         print(exc_wrong)
                         continue
@@ -340,7 +340,7 @@ while parsing.exit(EmpInput) is None:
     if first_command=='insert':
         name_table_insert = parsing.insert_table(EmpInput, column_values)
         if name_table_insert:
-            elem = check_if_name_is_correct(name_table_insert, tables, "insert")
+            elem = get_table_by_name(name_table_insert, tables, "insert")
             if elem:
 
                 if (elem.get_size() != len(column_values)):
@@ -369,7 +369,7 @@ while parsing.exit(EmpInput) is None:
     if result_of_parsing_all_where:
         name_all_where =result_of_parsing_all_where[0]
         command = result_of_parsing_all_where[1]
-        elem = check_if_name_is_correct(name_all_where, tables, "select/delete")
+        elem = get_table_by_name(name_all_where, tables, "select/delete")
         if elem:
             col_names = []
             elem.get_col_name(col_names)
@@ -428,7 +428,7 @@ while parsing.exit(EmpInput) is None:
     #if 'where' not in EmpInput1 and first_command!='delete':
 
     if name_select_col:
-            elem=check_if_name_is_correct(name_select_col, tables, "select")
+            elem=get_table_by_name(name_select_col, tables, "select")
             if elem:
                 arr = []
                 elem.get_col_name(arr)
@@ -457,7 +457,7 @@ while parsing.exit(EmpInput) is None:
     if result_select_columns_where:
         name_select_columns_where=result_select_columns_where[0]
         command=result_select_columns_where[1]
-        elem = check_if_name_is_correct(name_select_columns_where, tables, "select")
+        elem = get_table_by_name(name_select_columns_where, tables, "select")
         if elem:
             col_names = []
             elem.get_col_name(col_names)
@@ -504,7 +504,7 @@ while parsing.exit(EmpInput) is None:
     if result_of_parsing_all:
         name_all = result_of_parsing_all[0]
         command = result_of_parsing_all[1]
-        elem = check_if_name_is_correct(name_all, tables, "select/delete")
+        elem = get_table_by_name(name_all, tables, "select/delete")
         if elem:
             if command == "select":
                 try:
