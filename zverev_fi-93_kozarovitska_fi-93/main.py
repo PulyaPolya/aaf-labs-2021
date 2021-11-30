@@ -110,38 +110,6 @@ def delete(column_names, columns, right_rows):
             if columns[i]:
                 columns[i].pop(j)
 
-"""
-def delete_dupes(arr):
-    size = len(arr)
-    for i in range(1, size):
-        if i >= size:
-            break
-        if arr[i] == arr[i - 1]:
-            arr.pop(i)
-            size = len(arr)
-    size = len(arr)
-    if size > 2:
-        if (arr[size - 1] == arr[size - 2]):
-            arr.pop(size - 1)
-
-
-def delete_dupes_rand_order(arr):
-    arr1 = []
-    for i in reversed(arr):
-        if i not in arr1:
-            arr1.append(i)
-    arr1.sort()
-    arr = []
-    for elem in arr1:
-        arr.append(elem)
-    return arr
-
-
-def edit_arr(arr):
-    delete_dupes(arr)
-    arr.sort()
-
-"""
 def get_input():
     EmpInput = ""
     while ";" not in EmpInput:
