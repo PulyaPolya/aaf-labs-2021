@@ -3,48 +3,13 @@ import parsing
 
 
 def delete(column_names, columns, right_rows):
-    size = len(column_names)
-    size_col = len(columns[0])
     indexes_of_right_col = []
     for i in range(len(column_names)):
         indexes_of_right_col.append(i)
     for j in reversed(right_rows):
         for i in reversed(indexes_of_right_col):
-            # columns[i][j]="*"
             if columns[i]:
                 columns[i].pop(j)
-
-
-def delete_dupes(arr):
-    size = len(arr)
-    for i in range(1, size):
-        if i >= size:
-            break
-        if arr[i] == arr[i - 1]:
-            arr.pop(i)
-            size = len(arr)
-    size = len(arr)
-    if size > 2:
-        if (arr[size - 1] == arr[size - 2]):
-            arr.pop(size - 1)
-
-
-def delete_dupes_rand_order(arr):
-    arr1 = []
-    for i in reversed(arr):
-        if i not in arr1:
-            arr1.append(i)
-    arr1.sort()
-    arr = []
-    for elem in arr1:
-        arr.append(elem)
-    return arr
-
-
-def edit_arr(arr):
-    delete_dupes(arr)
-    arr.sort()
-
 
 def check_condition(columns1,columns2,numb_col1,numb_col2,symbol, number_of_row):
     if numb_col1==None or numb_col2==None:
