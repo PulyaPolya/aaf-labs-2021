@@ -1,7 +1,7 @@
 import re
 import tree
 import parsing
-import  table
+import table
 
 exc_name= 'wrong name of table, please try again'
 exc_name_col= 'wrong name of column, please try again'
@@ -332,7 +332,6 @@ while parsing.exit(EmpInput) is None:
 
 
     result1=[]
-    #if second_command=='*' or first_command=='select*' or first_command=='delete' or second_command=='*from':
     result_of_parsing_all_where=parsing.command_all_where(EmpInput, result1)
     if result_of_parsing_all_where:
         name_all_where =result_of_parsing_all_where[0]
@@ -393,7 +392,6 @@ while parsing.exit(EmpInput) is None:
 
     result1 = []
     name_select_col = parsing.select_columns(EmpInput, result1)
-    #if 'where' not in EmpInput1 and first_command!='delete':
 
     if name_select_col:
             elem=get_table_by_name(name_select_col, tables, "select")
