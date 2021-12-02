@@ -37,20 +37,24 @@ def full_join(col_from_table1,col_from_table2, columns1,columns2, number1 , numb
     rows_from_t2_without_pair = []
     for q in range (len(columns2[0])):
         rows_from_t2_without_pair.append(0)
+    if col_from_table1 is None and col_from_table2 is None:
+        raise Exception
     for j in range (len(columns1[0])):
         row_from_t1_found=0
         for t in range (len(columns2[0])):
             if columns1[number1][j]==columns2[number2][t] and check_condition(columns1, columns2, numb_of_first_col, numb_of_second_col, symbol, j)=='yes':
                 rows_from_t2_without_pair[t]=1
                 table_row=[]
-                for k in col_from_table1:
-                    table_row.append(columns1[k][j])
-                for k in col_from_table2:
-                    if number2 in col_from_table2:
-                        table_row.append(columns2[k][t])
-                    else:
-                        if k!= number2:
+                if col_from_table1:
+                    for k in col_from_table1:
+                        table_row.append(columns1[k][j])
+                if col_from_table2:
+                    for k in col_from_table2:
+                        if number2 in col_from_table2:
                             table_row.append(columns2[k][t])
+                        else:
+                            if k!= number2:
+                                table_row.append(columns2[k][t])
 
                 new_table.append(table_row)
                 row_from_t1_found=1
