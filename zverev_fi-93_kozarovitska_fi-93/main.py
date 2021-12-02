@@ -164,19 +164,20 @@ while parsing.exit(EmpInput) is None:
             col_from_table1=[]
             col_from_table2 = []
             went_wrong=0
-            for col in col_names:
-                x=elem1.find_col_in_dict_col_names(col)
-                if x is not None:
-                    col_from_table1.append(x)
-                else:
-                    y=elem2.find_col_in_dict_col_names(col)
-                    if y is not None:
-                        col_from_table2.append(y)
+            if col_names:
+                for col in col_names:
+                    x=elem1.find_col_in_dict_col_names(col)
+                    if x is not None:
+                        col_from_table1.append(x)
                     else:
-                        went_wrong=1
-            if  went_wrong==1:
-               print(exc_wrong)
-               continue
+                        y=elem2.find_col_in_dict_col_names(col)
+                        if y is not None:
+                            col_from_table2.append(y)
+                        else:
+                            went_wrong=1
+                if  went_wrong==1:
+                   print(exc_wrong)
+                   continue
 
             try:
                 elem1.check_if_order_of_col_correct(col_from_table1)
@@ -187,10 +188,24 @@ while parsing.exit(EmpInput) is None:
                 number2 = elem2.find_col_in_dict_col_names(col2)
                 indexes_of_right_col = []
                 right_rows = []
+
+                if command == "* full join" or command == "* full join where two col" or command == '* full join where "" ':
+                    col_from_table1 = []
+                    for i in range(elem1.get_size()):
+                        col_from_table1.append(i)
+                    col_from_table2 = []
+                    for i in range(elem2.get_size()):
+                        col_from_table2.append(i)
+                    col_names=[]
+                    elem1.get_col_name(col_names)
+                    col_names_table_2=[]
+                    elem2.get_col_name(col_names_table_2)
+                    for name in col_names_table_2:
+                        col_names.append(name)
+
                 for l in range(len(col_names)):
                     indexes_of_right_col.append(l)
-
-                if command=="full join":
+                if command=="full join" or  command=="* full join":
                     try:
                         new_table=table.full_join(col_from_table1,col_from_table2, columns1, columns2,number1,number2, None, None, None)
                         for r in range(len(new_table[0])):
@@ -198,7 +213,7 @@ while parsing.exit(EmpInput) is None:
                         beatiful_print(col_names, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
-                elif command=='full join where "" ':
+                elif command=='full join where "" ' or command=='* full join where "" ':
                     col_to_compare=result_full_join[6]
                     value=result_full_join[7]
                     symbol=result_full_join[8]
