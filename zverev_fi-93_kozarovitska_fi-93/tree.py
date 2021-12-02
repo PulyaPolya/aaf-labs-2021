@@ -14,37 +14,7 @@ def inorder(root):
               end=" ")
         inorder(root.right)
 
-"""
-def find_ns(root, lkpval, res):
-    if lkpval < root.key:
-        if root.left is None:
-            a = 1
-        # return str(lkpval)+" Not Found"
-        find_ns(root.left, lkpval, res)
-    elif lkpval > root.key:
-        if root.right is None:
-            a = 1
-        # return str(lkpval)+" Not Found"
-        find_ns(root.right, lkpval, res)
-    else:
-        res.append(root.count)
-        if root.left is None:
-            a = 1
-        elif root.left.key == lkpval:
-            res.append(root.left.count)
-            find_ns(root.left, lkpval, res)
-        elif root.left is not None:
-            find_ns(root.left, lkpval, res)
-        if root.right is None:
-            a = 1
-        elif root.right.key == lkpval:
-            res.append(root.right.count)
-            find_ns(root.right, lkpval, res)
-        elif root.right is not None:
-            find_ns(root.right, lkpval, res)
-        return root.count
 
-"""
 def insert(node, key, number):
     if node == None:
         k = newNode(key, number)
