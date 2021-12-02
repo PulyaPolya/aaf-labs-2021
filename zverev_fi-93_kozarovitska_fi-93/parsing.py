@@ -299,6 +299,10 @@ def full_join(EmpInput):
     s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*("[^"]+"\s*)\s*;'
     s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
     s4='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s5='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*=\s*[a-zA-Z0-9]+;'
+    s6='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
+    s7='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s8='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
     case=0
     if re.match(s1, EmpInput) is not None:
             case=1
@@ -308,13 +312,21 @@ def full_join(EmpInput):
         case =3
     elif re.match(s4, EmpInput) is not None:
         case = 4
+    elif re.match(s5, EmpInput) is not None:
+        case = 5
+    elif re.match(s6, EmpInput) is not None:
+        case = 6
+    elif re.match(s7, EmpInput) is not None:
+        case = 7
+    elif re.match(s8, EmpInput) is not None:
+        case = 8
     if case!=0:
         temp = EmpInput
         EmpInput1 = EmpInput.casefold()
         first_command = EmpInput1.split()[0]
-        if case==2 or case==4:
+        if case==2 or case==4 or case==6 or case ==8:
             temp = replace_value(EmpInput)
-        elif case==3:
+        elif case==3 or case==7:
             temp=replace_value_reversed(EmpInput)
         temp = re.sub(r'(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)', '  select  ', temp)
         temp = re.sub(r'(f|F)(r|R)(o|O)(M|m)', '  from  ', temp)
@@ -331,37 +343,47 @@ def full_join(EmpInput):
         for a in range (len(result1)):
             if result1[a]=='from':
                 break
-        for t in range(a):
-            col_names.append(result1[t])
+        if case<5:
+            for t in range(a):
+                col_names.append(result1[t])
         table1=result1[a+1]
         for b in range (len(result1)):
             if result1[b]=='join':
                 break
         table2=result1[b+1]
         size=len(result1)
-        symbol='='
+        #symbol='='
 
-        if case==2 or case==3:
+        if case==2 or case==3 or case==6 or case== 7:
             value = re.findall(r'\"[^\"]+\"', EmpInput)
             value = value[0].replace('"', "")
             col2 = result1[size - 5]
             col1 = result1[size - 7]
             symbol=result1[size - 2]
-            if case==2:
+            if case==2 or case ==6:
                 col_to_compare = result1[size - 3]
             else:
                 col_to_compare = result1[size - 1]
-            return (col_names, table1, table2, col1, col2, 'full join where "" ', col_to_compare, value, symbol)
-        elif case==4:
+            if case== 2 or case==3:
+                return (col_names, table1, table2, col1, col2, 'full join where "" ', col_to_compare, value, symbol)
+            else:
+                return (None, table1, table2, col1, col2, '* full join where "" ', col_to_compare, value, symbol)
+        elif case==4 or case== 8:
             col2 = result1[size - 5]
             col1 = result1[size - 7]
             col_to_compare2 = result1[size - 1]
             col_to_compare1 = result1[size - 3]
             symbol = result1[size - 2]
-            return (col_names, table1, table2, col1, col2, "full join where two col", col_to_compare1, col_to_compare2, symbol)
+            if case== 4:
+                return (col_names, table1, table2, col1, col2, "full join where two col", col_to_compare1, col_to_compare2, symbol)
+            else:
+                return (None, table1, table2, col1, col2, "* full join where two col", col_to_compare1, col_to_compare2, symbol)
         else:
             col1 = result1[size - 3]
             col2 = result1[size - 1]
-            return(col_names, table1, table2,col1, col2, "full join" )
+            if case== 1:
+                return(col_names, table1, table2,col1, col2, "full join" )
+            else:
+                return (None, table1, table2, col1, col2, "* full join")
     else:
         return None
