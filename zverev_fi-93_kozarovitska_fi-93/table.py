@@ -32,19 +32,86 @@ def check_condition(columns1,columns2,numb_col1,numb_col2,symbol, number_of_row)
                 if columns1[numb_col1][number_of_row]<=columns2[numb_col2][number_of_row]:
                     return ('yes')
 
-def full_join(col_from_table1,col_from_table2, columns1,columns2, number1 , number2, numb_of_first_col, numb_of_second_col, symbol):
-    new_table=[]
+
+def check_condition_value(value_in_table, value,symbol):
+    if symbol == '=':
+        if value_in_table == value:
+            return ('yes')
+    if symbol == '>':
+        if value_in_table > value:
+            return ('yes')
+    if symbol == '<':
+        if value_in_table < value:
+            return ('yes')
+    if symbol == '>=':
+        if value_in_table >= value:
+            return ('yes')
+    if symbol == '<=':
+        if value_in_table <= value:
+            return ('yes')
+    if symbol == '!=':
+        if value_in_table != value:
+            return ('yes')
+def get_real_right_rows(right_rows, elem):
+    right_arr_rows = []
+    for j in right_rows:
+        for k in range(len(elem.number)):
+            if j == elem.number[k]:
+                right_arr_rows.append(k)
+    return right_arr_rows
+def full_join_with_indexed(t1,  col_from_table1,col_from_table2,  columns1, columns2,number1,number2, elem1, elem2, rows_from_t2_without_pair):
     rows_from_t2_without_pair = []
-    for q in range (len(columns2[0])):
+    new_table = []
+    for j in range(len(columns2[0])):
         rows_from_t2_without_pair.append(0)
-    if col_from_table1 is None and col_from_table2 is None:
-        raise Exception
-    for j in range (len(columns1[0])):
-        row_from_t1_found=0
-        for t in range (len(columns2[0])):
-            if columns1[number1][j]==columns2[number2][t] and check_condition(columns1, columns2, numb_of_first_col, numb_of_second_col, symbol, j)=='yes':
-                rows_from_t2_without_pair[t]=1
-                table_row=[]
+    for j in range(len(columns1[0])):
+        row_from_t1_found = 0
+        right_rows1 = elem2.find_in_tree(t1, '=', columns1[number1][j])
+        right_rows=get_real_right_rows(right_rows1,elem2)
+        if right_rows:
+            for numb in right_rows:
+                rows_from_t2_without_pair[numb] = 1
+                table_row = []
+
+                for k in col_from_table1:
+                    table_row.append(columns1[k][j])
+                for k in col_from_table2:
+                    if number2 in col_from_table2:
+                        table_row.append(columns2[k][numb])
+                    else:
+                        if k != number2:
+                            table_row.append(columns2[k][numb])
+
+                new_table.append(table_row)
+                row_from_t1_found = 1
+        if row_from_t1_found == 0:
+            table_row = []
+            for k in col_from_table1:
+                table_row.append(columns1[k][j])
+            for k in col_from_table2:
+                # if number2 in col_from_table2:
+                table_row.append(' ')
+            new_table.append(table_row)
+    for a in range(len(rows_from_t2_without_pair)):
+
+        if rows_from_t2_without_pair[a] == 0:
+            table_row = []
+            for k in col_from_table1:
+                # if number2 in col_from_table2:
+                table_row.append(' ')
+            for k in col_from_table2:
+                table_row.append(columns2[k][a])
+            new_table.append(table_row)
+    return  new_table
+
+def  full_join_without_indexed(col_from_table1,col_from_table2,  columns1, columns2,number1,number2, rows_from_t2_without_pair):
+    new_table=[]
+    for j in range(len(columns1[0])):
+        row_from_t1_found = 0
+        for t in range(len(columns2[0])):
+            if columns1[number1][j] == columns2[number2][t]:
+                rows_from_t2_without_pair[t] = 1
+                table_row = []
                 if col_from_table1:
                     for k in col_from_table1:
                         table_row.append(columns1[k][j])
@@ -53,40 +120,128 @@ def full_join(col_from_table1,col_from_table2, columns1,columns2, number1 , numb
                         if number2 in col_from_table2:
                             table_row.append(columns2[k][t])
                         else:
-                            if k!= number2:
+                            if k != number2:
                                 table_row.append(columns2[k][t])
 
                 new_table.append(table_row)
-                row_from_t1_found=1
-        if row_from_t1_found==0:
+                row_from_t1_found = 1
+        if row_from_t1_found == 0:
             table_row = []
             for k in col_from_table1:
                 table_row.append(columns1[k][j])
             for k in col_from_table2:
-                #if number2 in col_from_table2:
-                    table_row.append(' ')
+                # if number2 in col_from_table2:
+                table_row.append(' ')
             new_table.append(table_row)
 
-    for a in range (len(rows_from_t2_without_pair)):
+    for a in range(len(rows_from_t2_without_pair)):
 
-        if rows_from_t2_without_pair[a]==0:
+        if rows_from_t2_without_pair[a] == 0:
             table_row = []
             for k in col_from_table1:
-                #if number2 in col_from_table2:
-                    table_row.append(' ')
+                # if number2 in col_from_table2:
+                table_row.append(' ')
             for k in col_from_table2:
                 table_row.append(columns2[k][a])
             new_table.append(table_row)
-    table=[]
+    return new_table
+def rebuild_table(new_table):
+    table = []
     for t in range(len(new_table[0])):
         table_temp = []
-        for a in range (len(new_table)):
+        for a in range(len(new_table)):
             table_temp.append(new_table[a][t])
         table.append(table_temp)
-
     return table
 
+def full_join(col_from_table1,col_from_table2, columns1,columns2, column1 , column2, numb_of_first_col, numb_of_second_col, symbol, elem1, elem2):
+    new_table=[]
+    rows_from_t2_without_pair = []
+    rows_from_t1_without_pair = []
+    number1=elem1.find_col_in_dict_col_names(column1)
+    number2 = elem2.find_col_in_dict_col_names(column2)
+    case=0
+    for q in range (len(columns2[0])):
+        rows_from_t2_without_pair.append(0)
+    for q in range(len(columns1[0])):
+        rows_from_t1_without_pair.append(0)
+    if col_from_table1 is None and col_from_table2 is None:
+        raise Exception
+    t2= elem2.find_col_in_dict_node(column2)
+    t1 = elem1.find_col_in_dict_node(column1)
+    if t2 is not None:
+        new_table=full_join_with_indexed(t2, col_from_table1, col_from_table2, columns1, columns2, number1, number2, elem1, elem2, rows_from_t2_without_pair)
+        case=1
+    elif t1 is not None:
+        case=2
+        new_table = full_join_with_indexed(t1, col_from_table2, col_from_table1, columns2, columns1, number2, number1, elem2, elem1, rows_from_t1_without_pair)
+    else:
+        """
+        for j in range (len(columns1[0])):
+            row_from_t1_found=0
+            for t in range (len(columns2[0])):
+                if columns1[number1][j]==columns2[number2][t] and check_condition(columns1, columns2, numb_of_first_col, numb_of_second_col, symbol, j)=='yes':
+                    rows_from_t2_without_pair[t]=1
+                    table_row=[]
+                    if col_from_table1:
+                        for k in col_from_table1:
+                            table_row.append(columns1[k][j])
+                    if col_from_table2:
+                        for k in col_from_table2:
+                            if number2 in col_from_table2:
+                                table_row.append(columns2[k][t])
+                            else:
+                                if k!= number2:
+                                    table_row.append(columns2[k][t])
 
+                    new_table.append(table_row)
+                    row_from_t1_found=1
+            if row_from_t1_found==0:
+                table_row = []
+                for k in col_from_table1:
+                    table_row.append(columns1[k][j])
+                for k in col_from_table2:
+                    #if number2 in col_from_table2:
+                        table_row.append(' ')
+                new_table.append(table_row)
+
+        for a in range (len(rows_from_t2_without_pair)):
+
+            if rows_from_t2_without_pair[a]==0:
+                table_row = []
+                for k in col_from_table1:
+                    #if number2 in col_from_table2:
+                        table_row.append(' ')
+                for k in col_from_table2:
+                    table_row.append(columns2[k][a])
+                new_table.append(table_row)
+   """
+        new_table=full_join_without_indexed(col_from_table1,col_from_table2,  columns1, columns2,number1,number2, rows_from_t2_without_pair)
+    table=rebuild_table(new_table)
+    if case==2:
+        table1=[]
+        size2= len(col_from_table2)
+        for k in range (len(col_from_table1)):
+            table1.append(table[size2+k])
+        for i in range (len(col_from_table2)):
+            table1.append(table[i])
+        return table1
+    return table
+
+def full_join_where_condition(table, numb__col1,numb__col2, value, symbol):
+    new_table=[]
+    if value==None:
+        case=2
+    elif numb__col2==None:
+        case=1
+    for i in range(len(table[0])):
+        if (case==1 and check_condition_value(table[numb__col1][i],value,symbol)) or (case==2 and check_condition_value(table[numb__col1][i],table[numb__col2][i],symbol) ) :
+            table_row=[]
+            for k in range (len(table)):
+                table_row.append(table[k][i])
+            new_table.append(table_row)
+    new_table1=rebuild_table(new_table)
+    return new_table1
 
 class Table:
     size_table = 0
@@ -252,6 +407,10 @@ class Table:
             for k in range(len(self.columns[number])):
                 if self.columns[number][k] >= value:
                     right_rows.append(k)
+        elif (symbol == "!="):
+            for k in range(len(self.columns[number])):
+                if self.columns[number][k]!= value:
+                    right_rows.append(k)
         return right_rows
 
     def find_col_in_dict_col_names(self, column):
@@ -268,7 +427,8 @@ class Table:
             number1 = t
             return number1
         else:
-            raise Exception
+            #raise Exception
+            return None
     def show_col_where(self, right_columns,name_of_col, symbol, value, right_arr_rows1):
         numbers_of_right_columns = []
         if right_columns:
@@ -283,7 +443,7 @@ class Table:
             for i in range(len(self.column_names)):
                 right_columns.append(i)
         x=self.dict_node.get(name_of_col)
-        if x is not None:
+        if x is not None and symbol != '!=':
             right_rows = self.find_in_tree(x, symbol, value)
             right_arr_rows=[]
             for j in right_rows:
@@ -374,7 +534,7 @@ class Table:
     def delete_col_where(self, name_of_col, symbol, value):
 
         number=self.dict_node.get(name_of_col)
-        if number:
+        if number and symbol !='!=':
 
             right_rows = self.find_in_tree(number, symbol, value)
             result_of_delete_from_tree=self.delete_rows_from_tree(right_rows,0)
@@ -413,6 +573,10 @@ class Table:
         elif (symbol == ">="):
             for k in range(len(self.columns[number1])):
                 if self.columns[number1][k] >= self.columns[number2][k]:
+                    right_rows.append(k)
+        elif (symbol == "!="):
+            for k in range(len(self.columns[number1])):
+                if self.columns[number1][k] != self.columns[number2][k]:
                     right_rows.append(k)
         return right_rows
 
