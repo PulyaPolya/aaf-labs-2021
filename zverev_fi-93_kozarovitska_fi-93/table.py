@@ -147,11 +147,12 @@ def  full_join_without_indexed(col_from_table1,col_from_table2,  columns1, colum
     return new_table
 def rebuild_table(new_table):
     table = []
-    for t in range(len(new_table[0])):
-        table_temp = []
-        for a in range(len(new_table)):
-            table_temp.append(new_table[a][t])
-        table.append(table_temp)
+    if new_table:
+        for t in range(len(new_table[0])):
+            table_temp = []
+            for a in range(len(new_table)):
+                table_temp.append(new_table[a][t])
+            table.append(table_temp)
     return table
 
 def full_join(col_from_table1,col_from_table2, columns1,columns2, column1 , column2, numb_of_first_col, numb_of_second_col, symbol, elem1, elem2):
@@ -239,6 +240,7 @@ def full_join_where_condition(table, numb__col1,numb__col2, value, symbol):
             table_row=[]
             for k in range (len(table)):
                 table_row.append(table[k][i])
+            #if table_row:
             new_table.append(table_row)
     new_table1=rebuild_table(new_table)
     return new_table1
