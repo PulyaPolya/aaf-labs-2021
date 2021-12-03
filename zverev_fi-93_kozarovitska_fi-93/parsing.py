@@ -77,12 +77,15 @@ def replace_value(EmpInput):
         temp = temp.replace(">=", " >=  ", 1)
     elif ("=>" in EmpInput):
         temp = temp.replace("=>", " >=  ", 1)
+    elif ("!=" in EmpInput):
+        temp = temp.replace("!=", " !=  ", 1)
     elif (">" in EmpInput):
         temp = temp.replace(">", " > ", 1)
     elif ("<" in EmpInput):
         temp = temp.replace("<", " <  ", 1)
     elif ("=" in EmpInput):
         temp = temp.replace("=", " =  ", 1)
+
     return temp
 def replace_value_reversed(EmpInput):
     temp = EmpInput
@@ -94,21 +97,24 @@ def replace_value_reversed(EmpInput):
         temp = temp.replace(">=", " <=  ", 1)
     elif ("=>" in EmpInput):
         temp = temp.replace("=>", " <=  ", 1)
+    elif ("!=" in EmpInput):
+        temp = temp.replace("!=", " !=  ", 1)
     elif (">" in EmpInput):
         temp = temp.replace(">", " < ", 1)
     elif ("<" in EmpInput):
         temp = temp.replace("<", " >  ", 1)
     elif ("=" in EmpInput):
         temp = temp.replace("=", " =  ", 1)
+
     return temp
 def select_columns_where(EmpInput, result):
 
     #s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,{0,1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*("[^"]+"\s*)\s*;'
-    s1='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+\s*)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
+    s1='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+\s*)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*(\"[^\"]+\"\s*)\s*;'
     #s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) ([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
     #s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*([a-zA-Z0-9]+\s*,{1}\s*)*\s*[a-zA-Z0-9]+\s*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*([a-zA-Z0-9]+\s*)+\s*(\s*,\s*[a-zA-Z0-9]+)*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
     case=0
     if '"' in EmpInput:
         if re.match(s1, EmpInput) is not None:
@@ -185,12 +191,12 @@ def select_columns(EmpInput, result):
         return name_of_insert
 
 def command_all_where(EmpInput, result):
-    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+([a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*))\s*;'
-    s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*\s*;'
-    s3 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s4 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
-    s5 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s6 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s1 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s*(w|W)(h|H)(e|E)(r|R)(e|E)\s+([a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*(\"[^\"]+\"\s*))\s*;'
+    s2 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*\s*;'
+    s3 = '\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t) \s*\*\s*(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
+    s4 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*(\"[^\"]+\"\s*)\s*;'
+    s5 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
+    s6 = '\s*(D|d)(e|E)(l|L)(e|E)(T|t)(E|e)\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
     case=0
     if re.match(s1, EmpInput) is not None:
         case=1
@@ -296,13 +302,13 @@ def exit(EmpInput):
 
 def full_join(EmpInput):
     s1='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*=\s*[a-zA-Z0-9]+;'
-    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*("[^"]+"\s*)\s*;'
-    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s4='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s2='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*("[^"]+"\s*)\s*;'
+    s3='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+("[^"]+"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
+    s4='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+([a-zA-Z0-9]+\s*,\s*)*\s*[a-zA-Z0-9]+\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
     s5='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*=\s*[a-zA-Z0-9]+;'
-    s6='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*(\"[^\"]+\"\s*)\s*;'
-    s7='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
-    s8='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s*;'
+    s6='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*(\"[^\"]+\"\s*)\s*;'
+    s7='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+(\"[^\"]+\"\s*)((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
+    s8='\s*(S|s)(e|E)(L|l)(E|e)(c|C)(T|t)\s+\*\s+(f|F)(r|R)(o|O)(M|m)\s+[a-zA-Z0-9]+\s* (F|f)(u|U)(L|l)(L|l)\s+(J|j)(O|o)(I|i)(N|n)\s+[a-zA-Z0-9]+\s+(O|o)(N|n)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<))\s*[a-zA-Z0-9]+\s+(w|W)(h|H)(e|E)(r|R)(e|E)\s+[a-zA-Z0-9]+\s*((=)||(<=)||(<)||(>)||(>=)||(=>)||(=<)||(!=))\s*[a-zA-Z0-9]+\s*;'
     case=0
     if re.match(s1, EmpInput) is not None:
             case=1
@@ -333,7 +339,7 @@ def full_join(EmpInput):
         temp = re.sub(r'(F|f)(u|U)(L|l)(L|l)', '  full  ', temp)
         temp = re.sub(r'(J|j)(O|o)(I|i)(N|n)', '  join  ', temp)
         temp = re.sub(r'(O|o)(N|n)', '  on  ', temp)
-        temp = re.sub(r'=', '  =  ', temp)
+        temp = re.sub(r'=', '  =  ', temp, 1)
         temp = re.sub(r';', '  ', temp)
         temp = temp.replace(first_command, "", 1)
         temp = temp.replace(" ", "", 1)
