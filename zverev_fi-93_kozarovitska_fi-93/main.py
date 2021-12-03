@@ -53,8 +53,8 @@ def beatiful_print(column_names, columns, indexes_of_right_col, right_rows):
                 while k < t / 2:
                     print(" ", end='')
                     k = k + 1
-        print("|", end='')
-        print('\n')
+        print("|", end='') #!!!
+        print('\n', end='')
         print("+", end='')
         for i in indexes_of_right_col:
             k = 0
@@ -62,7 +62,7 @@ def beatiful_print(column_names, columns, indexes_of_right_col, right_rows):
                 print("-", end='')
                 k = k + 1
             print("+", end='')
-        print('\n')
+        print('\n', end='') #!!!
         for j in right_rows:
             for i in indexes_of_right_col:
                 t = max[i] - len(columns[i][j])
@@ -90,7 +90,7 @@ def beatiful_print(column_names, columns, indexes_of_right_col, right_rows):
                         print(" ", end='')
                         k = k + 1
             print("|", end='')
-            print('\n')
+            print('\n', end='')
         print("+", end='')
         for i in indexes_of_right_col:
             k = 0
@@ -98,7 +98,7 @@ def beatiful_print(column_names, columns, indexes_of_right_col, right_rows):
                 print("-", end='')
                 k = k + 1
             print("+", end='')
-        print('\n')
+        print('\n', end='')
 
 
 def delete(column_names, columns, right_rows):
@@ -195,6 +195,24 @@ while parsing.exit(EmpInput) is None:
             col_from_table2 = []
             went_wrong=0
             if col_names:
+                for a in range (len(col_names)):
+                    x = elem1.find_col_in_dict_col_names(col_names[a])
+                    if x is not None:
+                        col_from_table1.append(x)
+                    else:
+                        break
+                while a<len(col_names):
+                    y = elem2.find_col_in_dict_col_names(col_names[a])
+                    if y is not None:
+                        col_from_table2.append(y)
+                        a+=1
+                    else:
+                        went_wrong = 1
+                        break
+                if went_wrong == 1:
+                    print(exc_order)
+                    continue
+                """
                 for col in col_names:
                     x=elem1.find_col_in_dict_col_names(col)
                     if x is not None:
@@ -208,7 +226,7 @@ while parsing.exit(EmpInput) is None:
                 if  went_wrong==1:
                    print(exc_wrong)
                    continue
-
+                """
             try:
                 elem1.check_if_order_of_col_correct(col_from_table1)
                 elem1.check_if_order_of_col_correct(col_from_table2)
@@ -238,8 +256,9 @@ while parsing.exit(EmpInput) is None:
                 if command=="full join" or  command=="* full join":
                     try:
                         new_table=table.full_join(col_from_table1,col_from_table2, columns1, columns2,col1,col2, None, None, None, elem1, elem2)
-                        for r in range(len(new_table[0])):
-                            right_rows.append(r)
+                        if new_table:
+                            for r in range(len(new_table[0])):
+                                right_rows.append(r)
                         beatiful_print(col_names, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
@@ -286,8 +305,9 @@ while parsing.exit(EmpInput) is None:
                             col_in_second_table+=len(col_from_table1)
                             new_table = table.full_join_where_condition(new_table, col_in_second_table,None,value, symbol)
                         right_rows=[]
-                        for r in range(len(new_table[0])):
-                            right_rows.append(r)
+                        if new_table:
+                            for r in range(len(new_table[0])):
+                                right_rows.append(r)
                         beatiful_print( col_names_new, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
@@ -343,6 +363,9 @@ while parsing.exit(EmpInput) is None:
                                 print(exc_name_col)
                                 continue
                         right_rows = []
+                        if case=='21':
+                            print(exc_order)
+                            continue
                         if result2 != 'already in selection':
                             col_names_new = []
                             parsing.assign(result2[0], col_names_new)
@@ -352,8 +375,9 @@ while parsing.exit(EmpInput) is None:
                         numb_of_first_col_in_table=dict_col_names[col_to_compare1]
                         numb_of_second_col_in_table = dict_col_names[col_to_compare2]
                         new_table = table.full_join_where_condition(new_table, numb_of_first_col_in_table,numb_of_second_col_in_table, None, symbol)
-                        for r in range(len(new_table[0])):
-                            right_rows.append(r)
+                        if new_table:
+                            for r in range(len(new_table[0])):
+                                right_rows.append(r)
                         beatiful_print(col_names_new, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
@@ -542,8 +566,6 @@ while parsing.exit(EmpInput) is None:
                     continue
             else:
                 print(exc_parsing)
-        #else:
-            #print(exc_name)
         continue
 
     result_of_parsing_all = parsing.command_all(EmpInput)
