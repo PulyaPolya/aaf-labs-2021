@@ -117,6 +117,36 @@ def get_input():
         EmpInput += '  '
     return EmpInput
 
+
+def add_col_to_selection(col_in_first_table,col_from_table1,col_names, col_to_compare, indexes_of_right_col, case ):
+    col_names_new = []
+
+    #if col_in_first_table in col_from_table1:
+    if col_to_compare in col_names:
+        return 'already in selection'
+    else:
+        #case += '0'
+        col_from_table1.append(col_in_first_table)
+        if case==1:
+            for r in range(len(col_from_table1) - 1):
+                col_names_new.append(col_names[r])
+            for k in range(len(indexes_of_right_col)):
+                if k >= len(col_from_table1) - 1:
+                    indexes_of_right_col[k] += 1
+            col_names_new.append(col_to_compare)
+            r = r + 1
+            while (r < len(col_names)):
+                col_names_new.append(col_names[r])
+                r = r + 1
+        else:
+            parsing.assign(col_names, col_names_new)
+            col_names_new.append(col_to_compare)
+        dict_col_names = {}
+        r = 0
+        for i in col_names_new:
+            dict_col_names[i] = r
+            r = r + 1
+        return (col_names_new,dict_col_names)
 def get_table_by_name(name_of_insert, tables, command):
    #check_if_name_is_right = -1
 
@@ -207,12 +237,13 @@ while parsing.exit(EmpInput) is None:
                     indexes_of_right_col.append(l)
                 if command=="full join" or  command=="* full join":
                     try:
-                        new_table=table.full_join(col_from_table1,col_from_table2, columns1, columns2,number1,number2, None, None, None)
+                        new_table=table.full_join(col_from_table1,col_from_table2, columns1, columns2,col1,col2, None, None, None, elem1, elem2)
                         for r in range(len(new_table[0])):
                             right_rows.append(r)
                         beatiful_print(col_names, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
+                        continue
                 elif command=='full join where "" ' or command=='* full join where "" ':
                     col_to_compare=result_full_join[6]
                     value=result_full_join[7]
@@ -225,20 +256,39 @@ while parsing.exit(EmpInput) is None:
                         if col_in_first_table is not None:
                             elem1.get_col_name(column_names)
                             elem1.show_col_where(column_names,col_to_compare, symbol, value,right_rows)
-                            columns1=elem1.return_specific_col_from_table(right_rows)
 
                         elif col_in_second_table is not None:
                             elem2.get_col_name(column_names)
                             elem2.show_col_where(column_names,col_to_compare, symbol, value,right_rows)
-                            columns2 = elem2.return_specific_col_from_table(right_rows)
                         else:
                             print(exc_name_col)
                             continue
                         right_rows=[]
-                        new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, number1, number2, None, None, None)
+                        case=''
+                        col_names_new = []
+                        parsing.assign(col_names, col_names_new)
+
+                        number_of_col_to_del=None
+                        if col_in_first_table is not None:
+                            result=add_col_to_selection(col_in_first_table, col_from_table1, col_names,col_to_compare, indexes_of_right_col, 1)
+                        if col_in_second_table is not None:
+                            case+='1'
+                            result = add_col_to_selection(col_in_second_table, col_from_table2, col_names, col_to_compare, indexes_of_right_col, 2)
+                        if result != 'already in selection':
+                            col_names_new = []
+                            parsing.assign(result[0], col_names_new)
+                        new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, col1, col2, None, None, None, elem1, elem2)
                         for r in range(len(new_table[0])):
                             right_rows.append(r)
-                        beatiful_print(col_names, new_table, indexes_of_right_col, right_rows)
+                        if col_in_first_table is not None:
+                            new_table=table.full_join_where_condition(new_table, col_in_first_table,None, value, symbol)
+                        if col_in_second_table is not None:
+                            col_in_second_table+=len(col_from_table1)
+                            new_table = table.full_join_where_condition(new_table, col_in_second_table,None,value, symbol)
+                        right_rows=[]
+                        for r in range(len(new_table[0])):
+                            right_rows.append(r)
+                        beatiful_print( col_names_new, new_table, indexes_of_right_col, right_rows)
                     except:
                         print(exc_wrong)
                         continue
@@ -251,49 +301,64 @@ while parsing.exit(EmpInput) is None:
                     col2_in_first_table = None
                     col1_in_second_table = None
                     right_rows = []
-                    empty_arr=[]
+                    col_names_new = []
+                    parsing.assign(col_names, col_names_new)
                     case=''
-                    numb_of_first_col = elem1.find_col_in_dict_col_names(col_to_compare1)
-                    if numb_of_first_col is not None:
-                        case='1'
-                    else:
-                        numb_of_first_col = elem2.find_col_in_dict_col_names(col_to_compare1)
+                    dict_col_names={}
+                    r=0
+                    for i in col_names:
+                        dict_col_names[i]=r
+                        r=r+1
+                    try:
+                        numb_of_first_col = elem1.find_col_in_dict_col_names(col_to_compare1)
                         if numb_of_first_col is not None:
-                            case = '2'
+                            case='1'
+                            result1 = add_col_to_selection(numb_of_first_col, col_from_table1, col_names, col_to_compare1,
+                                                         indexes_of_right_col, 1)
                         else:
-                            print(exc_name_col)
-                            continue
-                    numb_of_second_col = elem1.find_col_in_dict_col_names(col_to_compare2)
-                    if numb_of_second_col is not None:
-                        case+='1'
-                    else:
-                        numb_of_second_col = elem2.find_col_in_dict_col_names(col_to_compare2)
+                            numb_of_first_col = elem2.find_col_in_dict_col_names(col_to_compare1)
+                            if numb_of_first_col is not None:
+                                result1 = add_col_to_selection(numb_of_first_col, col_from_table2, col_names_new,
+                                                              col_to_compare1, indexes_of_right_col, 2)
+                                case = '2'
+                            else:
+                                print(exc_name_col)
+                                continue
+                        if result1 != 'already in selection':
+                            col_names_new = []
+                            parsing.assign(result1[0], col_names_new)
+                            dict_col_names = result1[1]
+                        numb_of_second_col = elem1.find_col_in_dict_col_names(col_to_compare2)
                         if numb_of_second_col is not None:
-                            case+='2'
+                            case+='1'
+                            result2 = add_col_to_selection(numb_of_second_col, col_from_table1, col_names_new, col_to_compare2,
+                                                           indexes_of_right_col, 1)
                         else:
-                            print(exc_name_col)
-                            continue
-                    if case=='11' or case=='22':
-                        if case=='11':
-                            elem1.show_col_where_two_col(empty_arr,col_to_compare1,col_to_compare2, symbol, right_rows)
-                            columns1 = elem1.return_specific_col_from_table(right_rows)
-                        elif case=='22':
-                            elem2.show_col_where_two_col(empty_arr,col_to_compare1,col_to_compare2, symbol, right_rows)
-                            columns2 = elem2.return_specific_col_from_table(right_rows)
-                        new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, number1, number2,
-                                                    None, None, None)
-                    elif case=='12':
-                        new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, number1, number2, numb_of_first_col,numb_of_second_col, symbol )
-                    elif case == '21':
-                        print(exc_order)
-                    right_rows = []
-                    for r in range(len(new_table[0])):
-                        right_rows.append(r)
-                    beatiful_print(col_names, new_table, indexes_of_right_col, right_rows)
+                            numb_of_second_col = elem2.find_col_in_dict_col_names(col_to_compare2)
+                            if numb_of_second_col is not None:
+                                case+='2'
+                                result2 = add_col_to_selection(numb_of_second_col, col_from_table2, col_names_new,
+                                                               col_to_compare2, indexes_of_right_col, 2)
+                            else:
+                                print(exc_name_col)
+                                continue
+                        right_rows = []
+                        if result2 != 'already in selection':
+                            col_names_new = []
+                            parsing.assign(result2[0], col_names_new)
+                            dict_col_names = result2[1]
+                        new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, col1, col2, None,
+                                                    None, None, elem1, elem2)
+                        numb_of_first_col_in_table=dict_col_names[col_to_compare1]
+                        numb_of_second_col_in_table = dict_col_names[col_to_compare2]
+                        new_table = table.full_join_where_condition(new_table, numb_of_first_col_in_table,numb_of_second_col_in_table, None, symbol)
+                        for r in range(len(new_table[0])):
+                            right_rows.append(r)
+                        beatiful_print(col_names_new, new_table, indexes_of_right_col, right_rows)
+                    except:
+                        print(exc_wrong)
+                        continue
 
-               #except:
-                    #print(exc_order)
-                    #continue
                 continue
             except:
                 print(exc_order)
