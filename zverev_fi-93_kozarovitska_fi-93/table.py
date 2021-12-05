@@ -229,8 +229,13 @@ def full_join(col_from_table1,col_from_table2, columns1,columns2, column1 , colu
         return table1
     return table
 
-def full_join_where_condition(table, numb__col1,numb__col2, value, symbol):
+def full_join_where_condition(table, numb__col1,numb__col2, value, symbol, value2):
     new_table=[]
+    if value2 is not None:
+        if check_condition_value(value, value2, symbol)=='yes':
+            return table
+        else:
+            return new_table
     if value==None:
         case=2
     elif numb__col2==None:
@@ -341,11 +346,6 @@ class Table:
         self.numb_of_rows = 0
         right_rows = []
         self.del_all = 0
-        """
-        for t in range(len(self.indexed)):
-            self.indexed[t] = tree.deleteAll(self.indexed[t])
-        self.indexed = []
-        """
         for i in self.dict_node:
             self.dict_node[i]=None
         size_col = len(self.columns[0])
@@ -431,7 +431,8 @@ class Table:
         else:
             #raise Exception
             return None
-    def show_col_where(self, right_columns,name_of_col, symbol, value, right_arr_rows1):
+    def show_col_where(self, right_columns,name_of_col, symbol, value, right_arr_rows1, case):
+
         numbers_of_right_columns = []
         if right_columns:
             for a in right_columns:
@@ -444,26 +445,30 @@ class Table:
         else:
             for i in range(len(self.column_names)):
                 right_columns.append(i)
-        x=self.dict_node.get(name_of_col)
-        if x is not None and symbol != '!=':
-            right_rows = self.find_in_tree(x, symbol, value)
-            right_arr_rows=[]
-            for j in right_rows:
-                for k in range(len(self.number)):
-                    if j  == self.number[k]:
-                        right_arr_rows.append(k)
+        if case==0:
+            if check_condition_value(name_of_col, value, symbol)=='yes':
+               return self.show_col(right_columns,right_arr_rows1)
         else:
-            right_arr_rows = []
-
-            t = self.dict_col_names.get(name_of_col)
-            if t is not None:
-                right_rows=self.find_in_table(t, symbol, value)
-                parsing.assign(right_rows, right_arr_rows)
+            x=self.dict_node.get(name_of_col)
+            if x is not None and symbol != '!=':
+                right_rows = self.find_in_tree(x, symbol, value)
+                right_arr_rows=[]
+                for j in right_rows:
+                    for k in range(len(self.number)):
+                        if j  == self.number[k]:
+                            right_arr_rows.append(k)
             else:
-                raise Exception("wrong column")
-        parsing.assign(right_arr_rows, right_arr_rows1)
-        if numbers_of_right_columns:
-            return numbers_of_right_columns
+                right_arr_rows = []
+
+                t = self.dict_col_names.get(name_of_col)
+                if t is not None:
+                    right_rows=self.find_in_table(t, symbol, value)
+                    parsing.assign(right_rows, right_arr_rows)
+                else:
+                    raise Exception("wrong column")
+            parsing.assign(right_arr_rows, right_arr_rows1)
+            if numbers_of_right_columns:
+                return numbers_of_right_columns
 
     def return_specific_col_from_table(self, right_rows):
         edited_table=[]
@@ -533,8 +538,15 @@ class Table:
                 number_of_del_col=number_of_del_col+1
         return (number_of_del_col, right_arr_rows)
 
-    def delete_col_where(self, name_of_col, symbol, value):
+    def delete_col_where(self, name_of_col, symbol, value, case):
+        if case==0:
+            if check_condition_value(name_of_col, value, symbol) == 'yes':
+                number_of_del_col= self.numb_of_rows
+                self.delete_all()
+                return  number_of_del_col
 
+            else:
+                return 0
         number=self.dict_node.get(name_of_col)
         if number and symbol !='!=':
 
