@@ -212,21 +212,6 @@ while parsing.exit(EmpInput) is None:
                 if went_wrong == 1:
                     print(exc_order)
                     continue
-                """
-                for col in col_names:
-                    x=elem1.find_col_in_dict_col_names(col)
-                    if x is not None:
-                        col_from_table1.append(x)
-                    else:
-                        y=elem2.find_col_in_dict_col_names(col)
-                        if y is not None:
-                            col_from_table2.append(y)
-                        else:
-                            went_wrong=1
-                if  went_wrong==1:
-                   print(exc_wrong)
-                   continue
-                """
             try:
                 elem1.check_if_order_of_col_correct(col_from_table1)
                 elem1.check_if_order_of_col_correct(col_from_table2)
@@ -237,7 +222,7 @@ while parsing.exit(EmpInput) is None:
                 indexes_of_right_col = []
                 right_rows = []
 
-                if command == "* full join" or command == "* full join where two col" or command == '* full join where "" ':
+                if command == "* full join" or command == "* full join where two col" or command == '* full join where "" ' or command =='* full join where two val ':
                     col_from_table1 = []
                     for i in range(elem1.get_size()):
                         col_from_table1.append(i)
@@ -263,7 +248,7 @@ while parsing.exit(EmpInput) is None:
                     except:
                         print(exc_wrong)
                         continue
-                elif command=='full join where "" ' or command=='* full join where "" ':
+                elif command=='full join where "" ' or command=='* full join where "" ' or command=='full join where two val ' or command =='* full join where two val ':
                     col_to_compare=result_full_join[6]
                     value=result_full_join[7]
                     symbol=result_full_join[8]
@@ -274,36 +259,40 @@ while parsing.exit(EmpInput) is None:
                     try:
                         if col_in_first_table is not None:
                             elem1.get_col_name(column_names)
-                            elem1.show_col_where(column_names,col_to_compare, symbol, value,right_rows)
-
+                            elem1.show_col_where(column_names,col_to_compare, symbol, value,right_rows,1)
+    
                         elif col_in_second_table is not None:
                             elem2.get_col_name(column_names)
-                            elem2.show_col_where(column_names,col_to_compare, symbol, value,right_rows)
+                            elem2.show_col_where(column_names,col_to_compare, symbol, value,right_rows,1)
                         else:
-                            print(exc_name_col)
-                            continue
+                            if command!='full join where two val ' and command!='* full join where two val ':
+                                print(exc_name_col)
+                                continue
                         right_rows=[]
                         case=''
                         col_names_new = []
                         parsing.assign(col_names, col_names_new)
-
+    
                         number_of_col_to_del=None
                         if col_in_first_table is not None:
                             result=add_col_to_selection(col_in_first_table, col_from_table1, col_names,col_to_compare, indexes_of_right_col, 1)
                         if col_in_second_table is not None:
                             case+='1'
                             result = add_col_to_selection(col_in_second_table, col_from_table2, col_names, col_to_compare, indexes_of_right_col, 2)
-                        if result != 'already in selection':
+                        if result != 'already in selection' and command!='full join where two val ' and command !='* full join where two val ':
                             col_names_new = []
                             parsing.assign(result[0], col_names_new)
                         new_table = table.full_join(col_from_table1, col_from_table2, columns1, columns2, col1, col2, None, None, None, elem1, elem2)
                         for r in range(len(new_table[0])):
                             right_rows.append(r)
                         if col_in_first_table is not None:
-                            new_table=table.full_join_where_condition(new_table, col_in_first_table,None, value, symbol)
+                            new_table=table.full_join_where_condition(new_table, col_in_first_table,None, value, symbol, None)
                         if col_in_second_table is not None:
                             col_in_second_table+=len(col_from_table1)
-                            new_table = table.full_join_where_condition(new_table, col_in_second_table,None,value, symbol)
+                            new_table = table.full_join_where_condition(new_table, col_in_second_table,None,value, symbol, None)
+                        if command == 'full join where two val ' or command=='* full join where two val ':
+                            new_table = table.full_join_where_condition(new_table,None, None, value,
+                                                                        symbol, col_to_compare)
                         right_rows=[]
                         if new_table:
                             for r in range(len(new_table[0])):
@@ -374,7 +363,7 @@ while parsing.exit(EmpInput) is None:
                                                     None, None, elem1, elem2)
                         numb_of_first_col_in_table=dict_col_names[col_to_compare1]
                         numb_of_second_col_in_table = dict_col_names[col_to_compare2]
-                        new_table = table.full_join_where_condition(new_table, numb_of_first_col_in_table,numb_of_second_col_in_table, None, symbol)
+                        new_table = table.full_join_where_condition(new_table, numb_of_first_col_in_table,numb_of_second_col_in_table, None, symbol, None)
                         if new_table:
                             for r in range(len(new_table[0])):
                                 right_rows.append(r)
@@ -449,12 +438,15 @@ while parsing.exit(EmpInput) is None:
             number = 0
             size_res = len(result1)
             columns = elem.get_table()
-            if command == "select where ''":
+            case=1
+            if command=="select where two val" or command=="delete where two val":
+                case=0
+            if command == "select where ''" or command=="select where two val":
                 try:
                     indexes_of_right_col = []
                     all_columns = []
                     elem.show_col_where(all_columns, result1[size_res - 3], result1[size_res - 2],
-                                        result1[size_res - 1], right_rows)
+                                        result1[size_res - 1], right_rows,case)
                     print(f"this is selection from '{elem.get_name()}' table")
                     beatiful_print(col_names, columns, all_columns, right_rows)
                 except:
@@ -470,10 +462,10 @@ while parsing.exit(EmpInput) is None:
                 except:
                     print(exc_wrong)
                     continue
-            elif command=="delete where ''":
+            elif command=="delete where ''" or command=="delete where two val":
                 try:
                     number_of_del_col = elem.delete_col_where(result1[size_res - 3], result1[size_res - 2],
-                                                              result1[size_res - 1])
+                                                              result1[size_res - 1],case)
                     print(f"we deleted {number_of_del_col} rows from '{elem.get_name()}' table")
                 except:
                     print(exc_wrong)
@@ -544,7 +536,7 @@ while parsing.exit(EmpInput) is None:
                         size_col = len(names_of_right_col)
                         names_of_right_col.pop(size_col - 1)
                     indexes = elem.show_col_where(names_of_right_col, result1[size_res - 3], result1[size_res - 2],
-                                                  result1[size_res - 1], right_arr_rows)
+                                                  result1[size_res - 1], right_arr_rows,1)
                     print(f"this is selection from '{elem.get_name()}' table")
                     beatiful_print(col_names, columns, indexes, right_arr_rows)
                 except:
@@ -561,6 +553,20 @@ while parsing.exit(EmpInput) is None:
                                                           result1[size_res - 2], right_rows)
                     print(f"this is selection from '{elem.get_name()}' table")
                     beatiful_print(col_names, columns, indexes, right_rows)
+                except:
+                    print(exc_wrong)
+                    continue
+            elif command == "select col where two val":
+                try:
+                    names_of_right_col = []
+                    parsing.assign(result1, names_of_right_col)
+                    for i in range(3):
+                        size_col = len(names_of_right_col)
+                        names_of_right_col.pop(size_col - 1)
+                    indexes = elem.show_col_where(names_of_right_col, result1[size_res - 2], result1[size_res - 3],
+                                                  result1[size_res - 1], right_arr_rows,0)
+                    print(f"this is selection from '{elem.get_name()}' table")
+                    beatiful_print(col_names, columns, indexes, right_arr_rows)
                 except:
                     print(exc_wrong)
                     continue
